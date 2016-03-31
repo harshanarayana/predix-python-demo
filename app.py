@@ -29,7 +29,8 @@ app = Flask(__name__)
 """
 
 
-# This is the base URL Routing Function. Let's put a Sample Demo HTML page in here.
+# This is the base URL Routing Function. Let's put a Sample Demo HTML page in
+# here.
 @app.route('/')
 def home():
     """
@@ -155,7 +156,9 @@ def get_redis():
 @app.route("/redis-status")
 def redis_status():
     global REDIS
-    return render_template("redis_status.html", json_data=REDIS.get_redis_info())
+    return render_template(
+        "redis_status.html",
+        json_data=REDIS.get_redis_info())
 
 
 # This Route acts as a way to check the Status for PostgreSQL.
@@ -169,12 +172,15 @@ def postgres_status():
         status = 0
     if len(message) < 1:
         message = "PostgreSQL Connection Successfully established."
-    return render_template("postgres_status.html", status=status, message=message)
+    return render_template(
+        "postgres_status.html",
+        status=status,
+        message=message)
 
 
-# This function Routes the request made by the End user into a function that handles
-# the process of getting the data from PostgreSQL machine and displaying it to the
-# end user in HTML table format.
+# This function Routes the request made by the End user into a function that
+# handles the process of getting the data from PostgreSQL machine and
+# displaying it to the end user in HTML table format.
 @app.route("/get-postgres")
 def get_postgres():
     global POSTGRES
@@ -191,7 +197,6 @@ def get_postgres():
 
 # This section of the Code Starts-up your Flask Application.
 if __name__ == "__main__":
-    print "Start"
     (flask_hostname, flask_port, flask_debug) = get_rest_information()
     (redis_hostname, redis_port, redis_password) = get_redis_config()
     (postgres_database, postgres_user, postgres_password,
@@ -211,5 +216,4 @@ if __name__ == "__main__":
     app.run(
         host=flask_hostname,
         port=flask_port,
-        debug=flask_debug
-    )
+        debug=flask_debug)

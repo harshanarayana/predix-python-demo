@@ -9,6 +9,7 @@
 import redis
 import json
 
+
 class RedisHandler(object):
     """
         This is the class that user needs to make use of, for handling
@@ -58,8 +59,9 @@ class RedisHandler(object):
 
     def add_to_redis(self, key, value=None):
         """
-            This function acts as an interface that the user can make use of for
-            creating an item in the REDIS Cache for Processing/any other req.
+            This function acts as an interface that the user can make use of
+            for creating an item in the REDIS Cache for Processing/any other
+            req.
 
             @:parameter
                 key     -   Key to use for Setting Redis Item.
@@ -168,7 +170,11 @@ class RedisHandler(object):
                 info    -   A Dictionary containing Redis Info.
         """
         try:
-            return json.dumps(self.redis.info(), sort_keys=True, indent=8, separators=(',', ': '))
+            return json.dumps(
+                self.redis.info(),
+                sort_keys=True,
+                indent=8,
+                separators=(',', ': '))
         except:
             self.error_found = True
             self.error = "Error Trying to Read Redis Infomration"

@@ -8,7 +8,7 @@
 # Library file required to setup Postgres.
 import psycopg2
 import traceback
-import json
+
 
 class PostgreSQL(object):
     """
@@ -102,7 +102,8 @@ class PostgreSQL(object):
 
     def run_query(self, quert_string):
         """
-            This function acts as a wat to read the Data from PostgreSQL machine.
+            This function acts as a wat to read the Data from PostgreSQL
+            machine.
 
             @:return
                 postgres_data   -   JSON data of all items in PostgreSQL.
@@ -126,6 +127,6 @@ class PostgreSQL(object):
             return True, ""
         else:
             error = self.error
-            if error is None :
+            if error is None:
                 error = "Unable to Identify PostgreSQL connection Status."
             return False, error

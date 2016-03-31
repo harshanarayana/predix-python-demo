@@ -54,7 +54,7 @@ def __parse_config_file(file_name):
     return json_data
 
 
-def get_rest_information(instance_type = "prod"):
+def get_rest_information(instance_type="prod"):
     """
         This function is used to return the RestFul service information
         back to the Flask App initiator so that the Flask Server can be
@@ -138,7 +138,8 @@ def get_rabbit_mq_config():
 
     if CONFIG_DICT.get("rabbitmq") is not None:
         host_name = CONFIG_DICT.get("rabbitmq").get("hostname")
-        message_queue_name = CONFIG_DICT.get("rabbitmq").get("message_queue_name")
+        message_queue_name = CONFIG_DICT.get(
+            "rabbitmq").get("message_queue_name")
 
     if 'VCAP_SERVICES' in os.environ:
         if os.environ.get('VCAP_SERVICES') is not None \
@@ -147,7 +148,8 @@ def get_rabbit_mq_config():
             VCAP_SERVICES = json.loads(os.environ.get("VCAP_SERVICES"))
             rabbit_mq = VCAP_SERVICES.get("p-rabbitmq-35")
             if rabbit_mq[0].get("credentials") is not None \
-                    and rabbit_mq[0].get("credentials").get("amqp") is not None:
+                    and rabbit_mq[0].get(
+                        "credentials").get("amqp") is not None:
                 ampq = rabbit_mq[0].get("credentials").get("amqp")
                 if ampp.get("host") is not None:
                     host_name = ampq.get("host")

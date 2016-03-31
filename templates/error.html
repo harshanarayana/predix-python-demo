@@ -10,8 +10,8 @@
     </div>
     <div id="content">
         Hello, master <strong> {{name}} </strong>, I've failed to find the ONE RING For you.. <br/>
-        I will keep you posed of any developments at {{email}}. <br/>
-        <strong>Failure : </strong> {{message}}
+        I will keep you posed of any developments at {{email}}. <br/><br/>
+        <font class="error_message"><strong>Failure : </strong> {{message}}</font>
     </div>
     <div id="content">
         <form action="{{ url_for('redis_signup') }}">
