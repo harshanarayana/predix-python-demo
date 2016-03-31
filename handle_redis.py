@@ -7,7 +7,7 @@
     An object of this can be created and used as per the user convenience.
 """
 import redis
-
+import json
 
 class RedisHandler(object):
     """
@@ -152,6 +152,13 @@ class RedisHandler(object):
             self.error = "Failed to Obtain Redis Key value Info."
             return ["Error", self.error]
 
+    def reset_error(self):
+        """
+            Reset Error Message.
+        """
+        self.error_found = False
+        self.error = ""
+
     def get_redis_info(self):
         """
             This acts as a wrapper to be used for obtaining the Redis
@@ -161,7 +168,7 @@ class RedisHandler(object):
                 info    -   A Dictionary containing Redis Info.
         """
         try:
-            return self.redis.info()
+            return json.dumps(self.redis.info(), sort_keys=True, indent=8, separators=(',', ': '))
         except:
             self.error_found = True
             self.error = "Error Trying to Read Redis Infomration"

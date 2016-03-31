@@ -6,7 +6,11 @@
 <body>
 <div id="container">
     <div class="title">
-        <h1>Predix.io - with Flask</h1>
+        {% if redis %}
+            <h1>Predix.io - with Flask : REDIS + PostgreSQL Submit Status Page</h1>
+        {% else %}
+            <h1>Predix.io - with Flask : Submit Status Page</h1>
+        {% endif %}
     </div>
     {% if redis %}
         <div id="content">
@@ -24,6 +28,11 @@
                     <td>
                         <form action="{{ url_for('get_redis') }}">
                             <input type="submit" value="Let the Unexpected Journey Begin"/>
+                        </form>
+                    </td>
+                    <td>
+                        <form action="{{ url_for('get_postgres') }}">
+                            <input type="submit" value="Look at The Necromancer"/>
                         </form>
                     </td>
                 </tr>

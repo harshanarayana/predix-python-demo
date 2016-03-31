@@ -134,19 +134,18 @@ def get_rabbit_mq_config():
     """
     host_name = "localhost"
     message_queue_name = "pq"
+    global CONFIG_DICT
 
-    global  CONFIG_DICT
-
-    if CONFIG_DICT.get("rabbitmq_host") is not None:
-        host_name = CONFIG_DICT.get("rabbitmq_host")
-
-    if CONFIG_DICT.get("rabbitmq_queue") is not None:
-        message_queue_name = CONFIG_DICT.get("rabbitmq_queue")
+    if CONFIG_DICT.get("rabbitmq") is not None:
+        host_name = CONFIG_DICT.get("rabbitmq").get("hostname")
+        message_queue_name = CONFIG_DICT.get("rabbitmq").get("message_queue_name")
 
     if 'VCAP_SERVICES' in os.environ:
         if os.environ.get('VCAP_SERVICES') is not None \
-                and os.environ.get("VCAP_SERVICES").get("p-rabbitmq-35") is not None:
-            rabbit_mq = os.environ.get("VCAP_SERVICES").get("p-rabbitmq-35")
+                and json.loads(os.environ.get(
+                    "VCAP_SERVICES")).get("p-rabbitmq-35") is not None:
+            VCAP_SERVICES = json.loads(os.environ.get("VCAP_SERVICES"))
+            rabbit_mq = VCAP_SERVICES.get("p-rabbitmq-35")
             if rabbit_mq[0].get("credentials") is not None \
                     and rabbit_mq[0].get("credentials").get("amqp") is not None:
                 ampq = rabbit_mq[0].get("credentials").get("amqp")
@@ -173,10 +172,18 @@ def get_redis_config():
     hostname = "localhost"
     port = 6379
     password = ''
-    if 'VCAP_SERVICES' is os.environ:
-        if os.environ.get("VCAP_SERVICES") is not None \
-                and os.environ.get("VCAP_SERVICES").get("redis-3") is not None:
-            redis = os.environ.get("VCAP_SERVICES").get("redis-3")[0]
+    global CONFIG_DICT
+
+    if CONFIG_DICT.get("redis") is not None:
+        hostname = CONFIG_DICT.get("redis").get("hostname")
+        port = CONFIG_DICT.get("redis").get("port")
+        password = CONFIG_DICT.get("redis").get("password")
+
+    if 'VCAP_SERVICES' in os.environ:
+        VCAP_SERVICES = json.loads(os.environ.get("VCAP_SERVICES"))
+        if VCAP_SERVICES is not None \
+                and VCAP_SERVICES.get("redis-3") is not None:
+            redis = VCAP_SERVICES.get("redis-3")[0]
             if redis.get("credentials") is not None:
                 hostname = redis.get("credentials").get("host", "localhost")
                 port = redis.get("credentials").get("port", 6379)
@@ -184,3 +191,44 @@ def get_redis_config():
 
     return hostname, port, password
 
+
+def get_postgresql_config():
+    """
+        This function checks through each items in the ENV Variable, Config
+        file as well as the Custom Default items in order to return the
+        parameters required to set up a PostgreSQL connection.
+
+        @:returns
+            database    -   Database to Use as Default.
+            user        -   User name for invoking connection.
+            password    -   Password to Establish PostgreSQL connection
+            host        -   Host Name to use
+            port        -   Connection port for PostgreSQL.
+    """
+    database = "test"
+    user = "postgres"
+    password = "password"
+    host = "127.0.0.1"
+    port = "4532"
+    global CONFIG_DICT
+
+    if CONFIG_DICT.get("postgres") is not None:
+        database = CONFIG_DICT.get("postgres").get("database")
+        user = CONFIG_DICT.get("postgres").get("user")
+        password = CONFIG_DICT.get("postgres").get("password")
+        host = CONFIG_DICT.get("postgres").get("host")
+        port = CONFIG_DICT.get("postgres").get("port")
+
+    if "VCAP_SERVICES" in os.environ:
+        VCAP_SERVICES = json.loads(os.environ.get("VCAP_SERVICES"))
+        if VCAP_SERVICES is not None \
+                and VCAP_SERVICES.get("postgres") is not None:
+            postgres = VCAP_SERVICES.get("postgres")[0]
+            if postgres.get("credentials") is not None:
+                database = postgres.get("credentials").get("database")
+                user = postgres.get("credentials").get("username")
+                password = postgres.get("credentials").get("password")
+                host = postgres.get("credentials").get("host")
+                port = postgres.get("credentials").get("port")
+
+    return database, user, password, host, port

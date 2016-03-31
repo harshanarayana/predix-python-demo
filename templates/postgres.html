@@ -6,24 +6,26 @@
 <body>
 <div id="container">
     <div class="title">
-        <h1>Predix.io - with Flask : Data Stored in REDIS Cache</h1>
+        <h1>Predix.io - with Flask : Data Persisted into PostgreSQL</h1>
     </div>
     <div id="content">
         <table class="tg">
             <tr>
-                <th class="table_header">Redis Cache Key</th>
-                <th class="table_header">Redis Cache Value</th>
+                <th class="table_header">ID</th>
+                <th class="table_header">Username</th>
+                <th class="table_header">Email</th>
             </tr>
-            {% for data in redis_data %}
-                <tr>
-                  <td class="table_data">{{ data.key }}</td>
-                  <td class="table_data">{{ data.value }}</td>
-                </tr>
+            {% for data in postgres_data %}
+            <tr>
+                <td class="table_data">{{ data.id }}</td>
+                <td class="table_data">{{ data.key }}</td>
+                <td class="table_data">{{ data.value }}</td>
+            </tr>
             {% endfor %}
         </table>
     </div>
     <div id="content">
-        <table border="0" cellspacing="2">
+        <table>
             <tr>
                 <td>
                     <form action="{{ url_for('redis_signup') }}">
@@ -31,8 +33,8 @@
                     </form>
                 </td>
                 <td>
-                    <form action="{{ url_for('get_postgres') }}">
-                        <input type="submit" value="Look at The Necromancer"/>
+                    <form action="{{ url_for('get_redis') }}">
+                        <input type="submit" value="Let the Unexpected Journey Begin"/>
                     </form>
                 </td>
             </tr>

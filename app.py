@@ -7,12 +7,15 @@
 """
 
 # Import Basic Library requirements.
-from flask import Flask, render_template, request, url_for
-from config import get_rest_information, get_rabbit_mq_config, get_redis_config
+from flask import Flask, render_template, request, url_for, redirect
+from config import get_rest_information, get_rabbit_mq_config, \
+    get_redis_config, get_postgresql_config
 from handle_redis import RedisHandler
+from handle_postgres import PostgreSQL
 
 # Some Global Variable to handle REDIS, POSTGRES and RABBITMQ.
 REDIS = None
+POSTGRES = None
 COUNTER = 1
 
 # This line initializes a Flask Application for the Current __name__.
@@ -92,9 +95,16 @@ def redis_submit():
         This behavior can be reproduced on any rest services.
     """
     global REDIS
-    global  COUNTER
+    global COUNTER
+    global POSTGRES
     username = request.form['username']
     email = request.form['useremail']
+    persist = request.form.get('persist')
+    if persist is not None:
+        persist = 1
+    else:
+        persist = 0
+
     if REDIS is None or REDIS.check_error():
         if REDIS is not None:
             message = REDIS.check_error()
@@ -105,9 +115,15 @@ def redis_submit():
             name=username,
             email=email,
             message=message)
+    REDIS.reset_error()
     REDIS.add_to_redis(username, email)
     REDIS.add_to_redis("inserts", COUNTER)
     COUNTER += 1
+
+    if persist:
+        query = "INSERT INTO DEMO (USERNAME, EMAIL) VALUES(%s, %s)"
+        POSTGRES.run_query_store(query_string=query, binding=(username, email))
+
     if REDIS.check_error():
         return render_template(
             "error.html",
@@ -134,16 +150,64 @@ def get_redis():
     return render_template("redis.html", redis_data=redis_data)
 
 
+# This route is provided for you to check if the REDIS connection is setup
+# or not before going ahead.
+@app.route("/redis-status")
+def redis_status():
+    global REDIS
+    return render_template("redis_status.html", json_data=REDIS.get_redis_info())
+
+
+# This Route acts as a way to check the Status for PostgreSQL.
+@app.route("/postgres-status")
+def postgres_status():
+    global POSTGRES
+    (status, message) = POSTGRES.check_status()
+    if status:
+        status = 1
+    else:
+        status = 0
+    if len(message) < 1:
+        message = "PostgreSQL Connection Successfully established."
+    return render_template("postgres_status.html", status=status, message=message)
+
+
+# This function Routes the request made by the End user into a function that handles
+# the process of getting the data from PostgreSQL machine and displaying it to the
+# end user in HTML table format.
+@app.route("/get-postgres")
+def get_postgres():
+    global POSTGRES
+    postgres_data = POSTGRES.run_query("SELECT * FROM DEMO")
+    postgres_info = list()
+    for row in postgres_data:
+        item = dict()
+        item['id'] = row[0]
+        item['key'] = row[1]
+        item['value'] = row[2]
+        postgres_info.append(item)
+    return render_template("postgres.html", postgres_data=postgres_info)
+
+
 # This section of the Code Starts-up your Flask Application.
 if __name__ == "__main__":
+    print "Start"
     (flask_hostname, flask_port, flask_debug) = get_rest_information()
     (redis_hostname, redis_port, redis_password) = get_redis_config()
+    (postgres_database, postgres_user, postgres_password,
+     postgres_host, postgres_port) = get_postgresql_config()
     if REDIS is None:
         REDIS = RedisHandler(
             host=redis_hostname,
             port=redis_port,
             password=redis_password)
 
+    if POSTGRES is None:
+        POSTGRES = PostgreSQL(database=postgres_database,
+                              user=postgres_user,
+                              password=postgres_password,
+                              host=postgres_host,
+                              port=postgres_port)
     app.run(
         host=flask_hostname,
         port=flask_port,

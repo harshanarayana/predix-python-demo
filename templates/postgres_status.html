@@ -1,0 +1,22 @@
+<html>
+<head>
+    <title>Predix Python Demo</title>
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div id="container">
+    <div class="title">
+        <h1>Predix.io - with Flask : PostgreSQL Status Information</h1>
+    </div>
+    <div id="content">
+        <strong>Postgres Status Information</strong><br/><br/>
+        {% if status %}
+            <strong><font class="success_message">{{message}}</font></strong>
+        {% else %}
+            <strong><font class="error_message">{{message}}</font></strong>
+        {% endif %}
+
+    </div>
+</div>
+</body>
+</html>

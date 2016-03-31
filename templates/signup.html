@@ -6,7 +6,12 @@
 <body>
 <div id="container">
     <div class="title">
-        <h1>Predix.io Demo - with Flask</h1>
+        {% if redis %}
+            <h1>Predix.io Demo - with Flask : REDIS + PostgreSQL Signup Page.</h1>
+        {% else %}
+            <h1>Predix.io Demo - with Flask : Signup Page.</h1>
+        {% endif %}
+
     </div>
     <div id="content">
         {% if not redis %}
@@ -23,6 +28,7 @@
                 <input type="text" name="username" required="true"/><br />
                 <label for="useremail">Please enter your email:</label>
                 <input type="text" name="useremail" required="true"/><br />
+                <input type="checkbox" name="persist" value="1"/> Persist Data into PostgreSQL<br/><br/>
                 <input type="submit" />
             </form>
         {% endif %}
