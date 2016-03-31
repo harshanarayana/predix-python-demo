@@ -69,9 +69,11 @@ def get_rest_information(instance_type = "prod"):
         @:returns:
             host_name   -   Host Name that needs to be used to run Flask
             port_number -   Port on which the Flask Application must run
+            debug       -   Enable or Disable Debug Mode based on ENV
     """
     port_number = 9099
     host_name = "0.0.0.0"
+    debug = False
     global CONFIG_DICT
     global CONFIG_FILE
 
@@ -88,6 +90,14 @@ def get_rest_information(instance_type = "prod"):
 
         if os.getenv("HOST_NAME") is not None:
             host_name = os.getenv("HOST_NAME")
+
+        if os.getenv("DEBUG") is not None:
+            if os.getenv("DEBUG"):
+                debug = True
+
+        if CONFIG_DICT.get("debug") is not None:
+            if CONFIG_DICT.get("debug"):
+                debug = True
     else:
         if __check_file(CONFIG_FILE):
             CONFIG_DICT = __parse_config_file(CONFIG_FILE)
@@ -98,7 +108,15 @@ def get_rest_information(instance_type = "prod"):
         else:
             port_number = 9099
 
-    return host_name, port_number
+        if os.getenv("DEBUG") is not None:
+            if os.getenv("DEBUG"):
+                debug = True
+
+        if CONFIG_DICT.get("debug") is not None:
+            if CONFIG_DICT.get("debug"):
+                debug = True
+
+    return host_name, port_number, debug
 
 
 def get_rabbit_mq_config():

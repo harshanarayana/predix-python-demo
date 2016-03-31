@@ -6,17 +6,40 @@
 <body>
 <div id="container">
     <div class="title">
-        <h1>Predix.io - POST request with Flask</h1>
+        <h1>Predix.io - with Flask</h1>
     </div>
-    <div id="content">
-        Hello, young padawan <strong> {{name}}</strong>, the FORCE is strong with you. <br/>
-        You have a long way to go before you become a Jedi. I will drop you a tutorial at {{email}}.
-    </div>
-    <div id="content">
-        <form action="{{ url_for('signup') }}">
-            <input type="submit" value="Singup to be a Padawan"/>
-        </form>
-    </div>
+    {% if redis %}
+        <div id="content">
+            Hello, master <strong> {{name}} </strong>, the ONE RING has been waiting for you all this time. <br/>
+            Looks like we finally found each other. To claim the ONE RING, please check your email {{email}}.
+        </div>
+        <div id="content">
+            <table border="0" cellspacing="2">
+                <tr>
+                    <td>
+                        <form action="{{ url_for('redis_signup') }}">
+                            <input type="submit" value="Singup. Hobbits wanted."/>
+                        </form>
+                    </td>
+                    <td>
+                        <form action="{{ url_for('get_redis') }}">
+                            <input type="submit" value="Let the Unexpected Journey Begin"/>
+                        </form>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    {% else %}
+        <div id="content">
+            Hello, young padawan <strong> {{name}}</strong>, the FORCE is strong with you. <br/>
+            You have a long way to go before you become a Jedi. I will drop you a tutorial at {{email}}.
+        </div>
+        <div id="content">
+            <form action="{{ url_for('signup') }}">
+                <input type="submit" value="Singup to be a Padawan"/>
+            </form>
+        </div>
+    {% endif %}
     </div>
 </body>
 </html>

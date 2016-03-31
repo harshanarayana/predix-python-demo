@@ -6,16 +6,26 @@
 <body>
 <div id="container">
     <div class="title">
-        <h1>Predix.io Demo - POST request with Flask</h1>
+        <h1>Predix.io Demo - with Flask</h1>
     </div>
     <div id="content">
-        <form method="post" action="{{ url_for('submit') }}">
-            <label for="yourname">Please enter your name:</label>
-            <input type="text" name="username" required="true"/><br />
-            <label for="youremail">Please enter your email:</label>
-            <input type="text" name="useremail" required="true"/><br />
-            <input type="submit" />
-        </form>
+        {% if not redis %}
+            <form method="post" action="{{ url_for('submit') }}">
+                <label for="username">Please enter your name:</label>
+                <input type="text" name="username" required="true"/><br />
+                <label for="useremail">Please enter your email:</label>
+                <input type="text" name="useremail" required="true"/><br />
+                <input type="submit" />
+            </form>
+        {% else %}
+            <form method="post" action="{{ url_for('redis_submit') }}">
+                <label for="username">Please enter your name:</label>
+                <input type="text" name="username" required="true"/><br />
+                <label for="useremail">Please enter your email:</label>
+                <input type="text" name="useremail" required="true"/><br />
+                <input type="submit" />
+            </form>
+        {% endif %}
     </div>
     </div>
 </body>

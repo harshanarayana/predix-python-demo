@@ -2,6 +2,49 @@
 ::moz-selection{ background-color: #E13300; color: white; }
 ::webkit-selection{ background-color: #E13300; color: white; }
 
+.tg  {
+    border-collapse:collapse;
+    border-spacing:0;
+    border-color:#999;
+}
+
+.tg td {
+    font-family:Arial, sans-serif;
+    font-size:14px;
+    padding:14px 16px;
+    border-style:solid;
+    border-width:1px;
+    overflow:hidden;
+    word-break:normal;
+    border-color:#999;
+    color:#444;
+    background-color:#F7FDFA;
+}
+
+.tg th {
+    font-family:Arial, sans-serif;
+    font-size:14px;
+    font-weight:normal;
+    padding:14px 16px;
+    border-style:solid;
+    border-width:1px;
+    overflow:hidden;
+    word-break:normal;
+    border-color:#999;
+    color:#fff;
+    background-color:#26ADE4;
+}
+
+.tg .table_header{
+    font-weight:bold;
+    vertical-align:top
+}
+
+.tg .table_data{
+    background-color:#D2E4FC;
+    vertical-align:top
+}
+
 body {
     font-family: "Helvetica Neue",Helvetica,Arial,"Lucida Grande",sans-serif;
     color: #888;

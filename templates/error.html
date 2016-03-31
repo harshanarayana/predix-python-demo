@@ -1,0 +1,23 @@
+<html>
+<head>
+    <title>Predix Python Demo</title>
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div id="container">
+    <div class="title">
+        <h1>Predix.io - with Flask</h1>
+    </div>
+    <div id="content">
+        Hello, master <strong> {{name}} </strong>, I've failed to find the ONE RING For you.. <br/>
+        I will keep you posed of any developments at {{email}}. <br/>
+        <strong>Failure : </strong> {{message}}
+    </div>
+    <div id="content">
+        <form action="{{ url_for('redis_signup') }}">
+            <input type="submit" value="Singup. Hobbits wanted."/>
+        </form>
+    </div>
+</div>
+</body>
+</html>
