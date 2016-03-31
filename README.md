@@ -11,6 +11,7 @@
     - [Setting Up Predix.io](#setting-up-predixio)
     - [Pushing to Predix.io Cloud](#pushing-to-predixio-cloud)
     - [Customizing and Using](#customizing-and-using)
+  - [Application Routing - Help](#application-routing---help)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -99,3 +100,20 @@ This application can be customized and modified before you can push to the Predi
 
 1. Update the Code and Test on Local machine using 
 2. [Follow the Steps mentioned in the above section.](#pushing-to-predixio-cloud)
+
+## Application Routing - Help ##
+
+This application has some basic routing modes built for the purpose of testing and demo. Below is a list of all the Routes that are available and what each of them do.
+
+| Routing Paths    | Python Function | Description                                                                                               |
+|------------------|-----------------|-----------------------------------------------------------------------------------------------------------|
+| /                | home            | This is the base page that loads up when you point the URL to the default Predix.io Application Home Page |
+| /sample          | sample          | This is the first sample URL that routes away from the Home page into a new page/URL                      |
+| /signup          | signup          | This is the HTML form that is used to perform a POST request on the Application                           |
+| /submit          | submit          | This is the HTML page that renders after the request from /signup is successfully completed               |
+| /redis-signup    | redis_signup    | This is the HTML form that is used to perform a POST request on the application with REDIS and PostgreSQL |
+| /redis-submit    | redis_submit    | This is the HTML page that renders after the request from /redis-signup is successfully completed         |
+| /get-redis       | get_redis       | This is the HTML page that contains the details of each Key-Value pair in REDIS                           |
+| /redis-status    | redis_status    | This is the HTML page that displays the REDIS status information                                          |
+| /postgres-status | postgres_status | This is the HTML page that displays the PostgreSQL status information                                     |
+| /get-postgres    | get_postgres    | This is the HTML page that displays the data stored in PostgreSQL's DEMO table.                           |
