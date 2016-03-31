@@ -1,0 +1,7 @@
+---
+applications:
+- name: predix-demo-raildocs-python
+  memory: 1G
+  build_pack: python_buildpack
+  command: python app.py
+  stack: cflinuxfs2

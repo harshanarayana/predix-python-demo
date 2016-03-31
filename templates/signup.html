@@ -1,0 +1,22 @@
+<html>
+<head>
+    <title>Predix Python Demo</title>
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div id="container">
+    <div class="title">
+        <h1>Predix.io Demo - POST request with Flask</h1>
+    </div>
+    <div id="content">
+        <form method="post" action="{{ url_for('submit') }}">
+            <label for="yourname">Please enter your name:</label>
+            <input type="text" name="username" required="true"/><br />
+            <label for="youremail">Please enter your email:</label>
+            <input type="text" name="useremail" required="true"/><br />
+            <input type="submit" />
+        </form>
+    </div>
+    </div>
+</body>
+</html>
