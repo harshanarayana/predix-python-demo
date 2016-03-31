@@ -12,6 +12,7 @@
     - [Pushing to Predix.io Cloud](#pushing-to-predixio-cloud)
     - [Customizing and Using](#customizing-and-using)
   - [Application Routing - Help](#application-routing---help)
+  - [Application Structure](#application-structure)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -117,3 +118,33 @@ This application has some basic routing modes built for the purpose of testing a
 | /redis-status    | redis_status    | This is the HTML page that displays the REDIS status information                                          |
 | /postgres-status | postgres_status | This is the HTML page that displays the PostgreSQL status information                                     |
 | /get-postgres    | get_postgres    | This is the HTML page that displays the data stored in PostgreSQL's DEMO table.                           |
+
+## Application Structure ##
+
+The following section contains the infomration about the Directory strucutre of this application.
+
+```yml
+
+|-- app.py                      # Main Application File.
+|-- config.py                   # Global Config Settings File
+|-- handle_postgres.py          # PostgreSQL Handler
+|-- handle_redis.py             # Redis Handler
+|-- manifest.yml                # CF Manifest File
+|-- predix-python-demo.iml      # IntelliJ IDEA Config File.
+|-- Procfile                    # Proc File
+|-- README.md                   # Readme.
+|-- requirements.txt            # Pip Installation List
+|-- static
+|   `-- style.css               # Static Style Sheet File.
+`-- templates 
+    |-- error.html              # Error Display Page.
+    |-- index.html              # Home Page Template
+    |-- postgres.html           # PostgreSQL Info Dispaly Template
+    |-- postgres_status.html    # PostgreSQL Status Display Template
+    |-- redis.html              # Redis Key-Value Display Template
+    |-- redis_status.html       # Redis Status Display Template
+    |-- sample.html             # Sample Template File.
+    |-- signup.html             # HTML Submit Form
+    `-- submit.html             # HTML Respose Page.
+
+```
