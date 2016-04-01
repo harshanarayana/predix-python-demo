@@ -52,6 +52,10 @@ def authenticate(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
         authentication = request.authorization
+        if authentication is None:
+            return Response('Failed Login! Missing Credentials',
+                            401,
+                            {'WWW-Authenticate': 'Basic realm="Auth!"'})
         if authentication.get("username") is None or authentication.get("password") is None:
             return Response('Failed Login! Missing Credentials',
                             401,
@@ -125,6 +129,7 @@ def redis_signup():
 # the payload. otherwise, it simply ignores the data and sends a JSON
 # response back in succsss mode.
 @app.route("/redis-rest-submit", methods=["POST"])
+@authenticate
 def create_redis_item():
     """
         This function takes an incoming payload from a RESTful POST request
@@ -212,7 +217,6 @@ def create_redis_item():
 # processes the incoming POST request from the Browser to Flask and processes
 # it accordingly.
 @app.route("/redis-submit/", methods=["POST"])
-@authenticate
 def redis_submit():
     """
         The Following page handles the Incoming Form that is submitted by
