@@ -2,3 +2,5 @@ pip
 Flask
 redis
 psycopg2
+celery
+pika

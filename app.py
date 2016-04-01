@@ -7,7 +7,8 @@
 """
 
 # Import Basic Library requirements.
-from flask import Flask, render_template, request, url_for, redirect
+from flask import Flask, render_template, request, url_for, redirect, \
+    jsonify
 from config import get_rest_information, get_rabbit_mq_config, \
     get_redis_config, get_postgresql_config
 from handle_redis import RedisHandler
@@ -82,6 +83,94 @@ def submit():
 @app.route("/redis-signup/")
 def redis_signup():
     return render_template("signup.html", redis=1)
+
+
+# The following section of the code acts as a POST RESTful service API that
+# adds the data to Redis Key-Value store and Persists to DB if specified in
+# the payload. otherwise, it simply ignores the data and sends a JSON
+# response back in succsss mode.
+@app.route("/redis-rest-submit", methods=["POST"])
+def create_redis_item():
+    """
+        This function takes an incoming payload from a RESTful POST request
+        and processes it to look for the following keys.
+
+        1. redis
+        2. persist
+
+        Based on the value of the keys mentioned above it performs one of the
+        tasks below as applicable
+    """
+    global REDIS
+    global POSTGRES
+    global COUNTER
+    has_redis = False
+    persist = False
+    message = dict()
+
+    if not request.json or 'payload' not in request.json:
+        message = {
+            "state": "failure",
+            "error": "payload key not found. Invalid Payload Data"
+        }
+        return jsonify({'message': message}), 400
+
+    if 'username' not in request.json.get('payload') or \
+            'email' not in request.json.get('payload'):
+        message = {
+            "state": "failure",
+            "error": "username & email are mandatory. Invalid Payload Data."
+        }
+        return jsonify({'message': message}), 400
+    payload = request.json.get('payload')
+
+    if payload.get('username') is None or payload.get('email') is None:
+        message = {
+            "state": "failure",
+            "error": "Username & email can't be empty. Invalid payload data."
+        }
+        return jsonify({'message': message}), 400
+
+    if 'redis' in request.json:
+        if request.json.get('redis'):
+            has_redis = True
+
+    if 'persist' in request.json:
+        if request.json.get('persist'):
+            persist = True
+
+    message = {
+        "state": "successful",
+        "info": "Hello, young padawan " + payload.get("username") + "," +
+        " the FORCE is strong with you. \n" +
+        "You have a long way to go before you become a Jedi. " +
+        "I will drop you a tutorial at " + payload.get("email")
+    }
+
+    if has_redis:
+        message['info'] = ""
+        REDIS.add_to_redis(payload.get("username"), payload.get("email"))
+        REDIS.add_to_redis("inserts", COUNTER)
+        COUNTER += 1
+        message['info'] = "Hello, master " + payload.get("username") + \
+            ", the ONE RING has been waiting for you all this time. \n" + \
+            "Looks like we finally found each other. " + \
+            "To claim the ONE RING, please check your email " + \
+            payload.get("email")
+        message['redis_status'] = "stored"
+
+    if persist:
+        query = "INSERT INTO DEMO (USERNAME, EMAIL) VALUES(%s, %s)"
+        POSTGRES.run_query_store(
+            query_string=query,
+            binding=(
+                payload.get("username"),
+                payload.get("email")
+            )
+        )
+        message['persist'] = "successful"
+
+    return jsonify({'message': message}), 200
 
 
 # The Following Section of the Code acts as a Post Submit Action Handler that
