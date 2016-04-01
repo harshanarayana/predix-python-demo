@@ -73,7 +73,7 @@ class RedisHandler(object):
             self.error_found = True
             self.error = "Failed to Set Value " + value + " to Key " + key
 
-    def get_from_redis(self, key):
+    def get_from_redis(self, key, auth=False):
         """
             This function acts as an interface while the user tries to obtain
             a value from the REDIS cache.
@@ -89,13 +89,19 @@ class RedisHandler(object):
                 self.error_found = True
                 self.error = "Can't have a None/Null value for Key while " + \
                              "trying read data from REDIS"
-                return ""
+                if auth:
+                    return False
+                else:
+                    return ""
             else:
                 return self.redis.get(key)
         except:
             self.error_found = True
             self.error = "Failed to get value for Key " + key
-            return self.error
+            if auth:
+                return False
+            else:
+                return self.error
 
     def add_to_redis_list(self, key, value=None):
         """
@@ -179,3 +185,9 @@ class RedisHandler(object):
             self.error_found = True
             self.error = "Error Trying to Read Redis Infomration"
             return self.error
+
+    def get_connection(self):
+        """
+            Used for getting the Redis Connection Object.
+        """
+        return self.redis

@@ -89,7 +89,7 @@ This application is a generic application build for the purpose of Demo and can 
       build_pack: python_buildpack
       command: python app.py
       stack: cflinuxfs2
-      services: # If you have named your services differently, update them in the followin section accordingly.
+      services: # If you have named your services differently, update them.
       - dev  # Redis Service
       - testpsql  # PostgreSQL Service
   ```
@@ -114,6 +114,7 @@ This application has some basic routing modes built for the purpose of testing a
 | /submit          | submit          | This is the HTML page that renders after the request from /signup is successfully completed               |
 | /redis-signup    | redis_signup    | This is the HTML form that is used to perform a POST request on the application with REDIS and PostgreSQL |
 | /redis-submit    | redis_submit    | This is the HTML page that renders after the request from /redis-signup is successfully completed         |
+| /redis-rest-submit| create_redis_item| This is the RESTful Function responsible for storing data into Redis and PostgreSQL.                    |
 | /get-redis       | get_redis       | This is the HTML page that contains the details of each Key-Value pair in REDIS                           |
 | /redis-status    | redis_status    | This is the HTML page that displays the REDIS status information                                          |
 | /postgres-status | postgres_status | This is the HTML page that displays the PostgreSQL status information                                     |

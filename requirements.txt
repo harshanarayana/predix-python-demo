@@ -4,3 +4,5 @@ redis
 psycopg2
 celery
 pika
+Flask-HTTPAuth
+md5
