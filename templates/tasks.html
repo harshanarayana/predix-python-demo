@@ -1,0 +1,17 @@
+<html>
+<head>
+    <title>Predix Python Demo</title>
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div id="container">
+    <div class="title">
+        <h1>Predix.io Demo - with Flask : Microservices.</h1>
+    </div>
+    <div id="content">
+        <span>Process' running from nameko with integration with AMQP...</span>
+        Task running for Fibonacci Calculation : <a href="/fibonacci-result/{{ task_id }}">Task : {{ task_id }} </a>
+    </div>
+    </div>
+</body>
+</html>

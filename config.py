@@ -234,3 +234,31 @@ def get_postgresql_config():
                 port = postgres.get("credentials").get("port")
 
     return database, user, password, host, port
+
+
+def get_amqp_config():
+    """
+        This function is used to obtain the AMPQ URI handler that is required
+        by nameko micro-services api to handle the Incoming data request and
+        return the data accordingly in an Async manner.
+    """
+    URL = 'amqp://guest:guest@localhost/'
+
+    global CONFIG_DICT
+
+    if CONFIG_DICT.get("amqp_uri") is not None:
+        URL = CONFIG_DICT.get("amqp_uri")
+
+    if "VCAP_SERVICES" in os.environ:
+        VCAP_SERVICES = json.loads(os.environ.get("VCAP_SERVICES"))
+        if VCAP_SERVICES is not None \
+                and VCAP_SERVICES.get("p-rabbitmq-35") is not None:
+            RMQ = VCAP_SERVICES.get("p-rabbitmq-35")
+            if RMQ is not None and RMQ[0] is not None:
+                CREDS = RMQ[0]['credentials']
+                if CREDS and CREDS.get('protocols') is not None:
+                    PROT = CREDS.get('protocols')
+                    if PROT is not None and \
+                            PROT.get('amqp') is not None:
+                        URL = PROT.get('amqp').get('uri')
+    return URL

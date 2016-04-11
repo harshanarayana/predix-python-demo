@@ -6,5 +6,9 @@ applications:
   command: python app.py
   stack: cflinuxfs2
   services:
-  - dev
-  - testpsql
+    - dev
+    - testpsql
+    - blobstore
+    - rabbitmq
+  env:
+    DEBUG: 1

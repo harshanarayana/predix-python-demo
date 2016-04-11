@@ -10,12 +10,13 @@
 from flask import Flask, render_template, request, \
     jsonify, make_response, Response
 from config import get_rest_information, get_redis_config, \
-    get_postgresql_config
+    get_postgresql_config, get_amqp_config
 from handle_redis import RedisHandler
 from handle_postgres import PostgreSQL
 from flask.ext.httpauth import HTTPBasicAuth
 import md5
 from functools import wraps
+from nameko.standalone.rpc import ServiceRpcProxy
 
 # Some Global Variable to handle REDIS, POSTGRES and RABBITMQ.
 REDIS = None
@@ -56,12 +57,14 @@ def authenticate(f):
             return Response('Failed Login! Missing Credentials',
                             401,
                             {'WWW-Authenticate': 'Basic realm="Auth!"'})
-        if authentication.get("username") is None or authentication.get("password") is None:
+        if authentication.get("username") is None or \
+                authentication.get("password") is None:
             return Response('Failed Login! Missing Credentials',
                             401,
                             {'WWW-Authenticate': 'Basic realm="Auth!"'})
         if not validate_credentials(
-                authentication.get("username"), authentication.get("password")):
+                authentication.get("username"),
+                authentication.get("password")):
             return Response('Failed Login! Invalid Credentials.',
                             401,
                             {'WWW-Authenticate': 'Invalid Credentials'})
@@ -338,7 +341,10 @@ def validate_credentials(username, password):
     global AUTHENTICATION
     md5user = md5.new(username)
     md5pass = md5.new(password)
-    return AUTHENTICATION.get("username") == md5user.hexdigest() and AUTHENTICATION.get("password") == md5pass.hexdigest()
+    return AUTHENTICATION.get("username") == \
+        md5user.hexdigest() and \
+        AUTHENTICATION.get("password") \
+        == md5pass.hexdigest()
 
 
 # Basic Function that Takes a Set of Authentication values in BASIC Auth mode
@@ -355,6 +361,41 @@ def authenticate_rest():
         "message": "Oh Captain, My Captain."
     }
     return jsonify({'message': message}), 200
+
+
+# Micro-Services Example.
+# Micro Service Entry Point for the Function from UI.
+@app.route("/fibonacci")
+def tasks():
+    return render_template("fibonaci.html")
+
+
+# Post Event Handler for Python Function that invokes the Micro-service
+@app.route("/fibonacci-submit", methods=['POST'])
+def fibonacci_post():
+    number = int(request.form['number'])
+    with rpc_proxy() as task_proxy:
+        task_id = task_proxy.start_task("fibonacci", number)
+
+    return render_template("tasks.html", task_id=task_id)
+
+
+# GET Even Handler that returns the Fibonacci Squence Value.
+@app.route("/fibonacci-result/<string:task_id>")
+def fibonacci_result(task_id):
+    with rpc_proxy() as task_proxy:
+        result = task_proxy.get_result(task_id)
+
+    return render_template("tasks_result.html", result=result)
+
+
+# the ServiceRpcProxy instance isn't thread safe so we constuct one for
+# each request; a more intelligent solution would be a thread-local or
+# pool of shared proxies
+def rpc_proxy():
+    URL = get_amqp_config()
+    config = {'AMQP_URI': URL}
+    return ServiceRpcProxy('tasks', config)
 
 
 # This section of the Code Starts-up your Flask Application.
